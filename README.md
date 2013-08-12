@@ -1,6 +1,6 @@
 # grunt-go [![Build Status](https://travis-ci.org/101loops/grunt-go.png?branch=master)](https://travis-ci.org/101loops/grunt-go)
 
-> Grunt task for Go
+> Grunt plugin for working with Go
 
 
 
@@ -39,4 +39,4 @@ TODO
 
 Task submitted by [Stephan Behnke](http://stephanbehnke.com)
 
-*This file was generated on Mon Aug 12 2013 18:42:31.*
+*This file was generated on Mon Aug 12 2013 18:44:49.*

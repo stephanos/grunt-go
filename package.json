@@ -1,6 +1,6 @@
 {
   "name": "grunt-go",
-  "description": "Grunt task for Go",
+  "description": "Grunt plugin for working with Go",
   "version": "0.0.1",
   "homepage": "https://github.com/101loops/grunt-go",
   "author": {
