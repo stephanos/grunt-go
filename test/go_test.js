@@ -28,7 +28,7 @@ exports.copy = {
     });
 
     var result = task.execute(true);
-    test.equals(result.cmd, 'sdk/go clean');
+    test.notEqual(result.cmd.indexOf('/sdk/go clean'), -1);
 
     test.done();
   },

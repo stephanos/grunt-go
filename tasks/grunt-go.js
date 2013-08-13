@@ -50,7 +50,7 @@ module.exports = function (grunt) {
       // ==== read task parameters
 
       var taskArgs = this.args || [];
-      grunt.log.debug('task args: ' + taskArgs);
+      grunt.log.debug('Task args: ' + taskArgs);
       if (validateArgs(taskArgs) === false) {
         return false;
       }
@@ -64,7 +64,7 @@ module.exports = function (grunt) {
         gruntTaskOpts,
         defaultOpts
       );
-      grunt.log.debug('task opts: ' + JSON.stringify(taskOpts));
+      grunt.log.debug('Task opts: ' + JSON.stringify(taskOpts));
       var output = taskOpts['output'] || target;
 
 
@@ -74,6 +74,12 @@ module.exports = function (grunt) {
       var goBin = taskOpts['bin'];
       if (goBin) {
         cmd = goBin + '/' + cmd;
+
+        if (cmd.substr(0, 1) === '~') {
+          cmd = process.env.HOME + cmd.substr(1);
+        }
+
+        cmd = path.resolve(cmd);
       }
 
 
@@ -139,7 +145,7 @@ module.exports = function (grunt) {
         cmdOpts['env'].GOPATH = GOPATH.join(':');
       }
 
-      grunt.log.debug('cmd opts: ' + JSON.stringify(cmdOpts));
+      grunt.log.debug('CMD opts: ' + JSON.stringify(cmdOpts));
 
 
       // ==== execute and return
