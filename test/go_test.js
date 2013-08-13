@@ -2,77 +2,95 @@ var ctx = require('./context.js');
 
 exports.copy = {
 
-  testRun: function (test) {
-    var task = ctx.newTask(['myapp', 'run']);
-
-    var result = task.execute(true);
-    test.notEqual(result, false);
-    test.equals(result.cmd, 'go run');
-
-    test.done();
-  },
-
-  testRunWithCustomRoot: function (test) {
-    var task = ctx.newTask(['myapp', 'run'], {
-      root: "myroot"
-    });
-
-    var result = task.execute(true);
-    test.notEqual(result, false);
-    test.notEqual(result.opts['cwd'].indexOf('/myroot'), -1);
-
-    test.done();
-  },
-
-  testCleanWithCustomBin: function (test) {
+  testClean: function (test) {
     var task = ctx.newTask(['myapp', 'clean'], {
-      bin: "sdk"
+      clean_flags: ['-i', '-r']
     });
 
     var result = task.execute(true);
-    test.notEqual(result, false);
-    test.notEqual(result.cmd.indexOf('/sdk/go clean'), -1);
+    test.equals(result.cmd, 'go clean -i -r .');
 
     test.done();
   },
 
-  testRunWithCustomGoPath: function (test) {
-    var task = ctx.newTask(['myapp', 'run'], {
-      myapp: {
-        GOPATH: ["mypath"]
-      }
+  testFix: function (test) {
+    var task = ctx.newTask(['myapp', 'fix'], {
+      pckgs: ['mypckg']
     });
 
     var result = task.execute(true);
-    test.notEqual(result, false);
-    test.equal(result.opts['env']['GOPATH'].indexOf(':'), -1);
-    test.notEqual(result.opts['env']['GOPATH'].indexOf('/mypath'), -1);
+    test.equals(result.cmd, 'go fix mypckg');
 
     test.done();
   },
 
-  testRunWithCustomGoArch: function (test) {
-    var task = ctx.newTask(['myapp', 'run'], {
-      env: {
-        GOARCH: "amd64"
-      }
+  testFmt: function (test) {
+    var task = ctx.newTask(['myapp', 'fmt'], {
+      fmt_pckgs: ['mypckg'],
+      fmt_flags: ['-n']
     });
 
     var result = task.execute(true);
-    test.notEqual(result, false);
-    test.equal(result.opts['env']['GOARCH'], 'amd64');
+    test.equals(result.cmd, 'go fmt -n mypckg');
 
     test.done();
   },
 
-  testTestWithInlineTags: function (test) {
-    var task = ctx.newTask(['myapp', 'test-!myflag'], {
-      build_flags: ['-tags', 'myflag']
+  testDoc: function (test) {
+    var task = ctx.newTask(['myapp', 'doc'], {
+      doc_flags: ['-n']
     });
 
     var result = task.execute(true);
-    test.notEqual(result, false);
-    test.equals(result.cmd, 'go test -tags !myflag .');
+    test.equals(result.cmd, 'go doc -n .');
+
+    test.done();
+  },
+
+  testList: function (test) {
+    var task = ctx.newTask(['myapp', 'list'], {
+      list_flags: ['-json'],
+      list_pckgs: ['mypckg']
+    });
+
+    var result = task.execute(true);
+    test.equals(result.cmd, 'go list -json mypckg');
+
+    test.done();
+  },
+
+  testGet: function (test) {
+    var task = ctx.newTask(['myapp', 'get'], {
+      get_flags: ['-u'],
+      get_pckgs: ['mypckg'],
+      build_flags: ['-race']
+    });
+
+    var result = task.execute(true);
+    test.equals(result.cmd, 'go get -u -race mypckg');
+
+    test.done();
+  },
+
+  testVet: function (test) {
+    var task = ctx.newTask(['myapp', 'vet'], {
+      vet_flags: ['-n']
+    });
+
+    var result = task.execute(true);
+    test.equals(result.cmd, 'go vet -n .');
+
+    test.done();
+  },
+
+  testInstall: function (test) {
+    var task = ctx.newTask(['myapp', 'install'], {
+      build_flags: ['-race'],
+      install_flags: ['-nonsense']
+    });
+
+    var result = task.execute(true);
+    test.equals(result.cmd, 'go install -race .');
 
     test.done();
   }

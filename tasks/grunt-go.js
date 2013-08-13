@@ -7,8 +7,7 @@ module.exports = function (grunt) {
   var _ = grunt.util._;
 
   var defaultOpts = {
-    build_pckgs: ['.'],
-    test_pckgs: ['.']
+    pckgs: ['.']
   };
 
   function spawned(done, cmd, args, opts) {
@@ -41,7 +40,7 @@ module.exports = function (grunt) {
 
   function validateOpts(opts) {
     for (var key in opts) {
-      if (key.indexOf('_flags') !== -1 || key.indexOf('_pckgs') !== -1 || key === 'GOPATH') {
+      if (key.indexOf('_flags') !== -1 || key.indexOf('pckgs') !== -1 || key.indexOf('_files') !== -1  || key === 'GOPATH') {
         var value = opts[key];
         if (!(value instanceof Array)) {
           grunt.log.error('Unable to run task: option \'' + key + '\' must be an array');
@@ -125,27 +124,32 @@ module.exports = function (grunt) {
 
       var cmdArgs = [action];
       var cmdFlags = taskOpts[action + '_flags'] || [];
-      var cmdPckgs = taskOpts[action + '_pckgs'] || [];
+      var cmdBuildFlags = replaceTags(taskOpts['build_flags'], inlineTags) || [];
+      var cmdPckgs = taskOpts[action + '_pckgs'] || taskOpts[action + '_files'] || taskOpts['pckgs'] || [];
 
       if (action === "test") {
-        var buildFlags = replaceTags(taskOpts['build_flags'], inlineTags);
-
-        var testBuildFlags = taskOpts['test_build_flags'];
-        if (testBuildFlags) {
-          cmdArgs = cmdArgs.concat(testBuildFlags);
-        }
-        if (buildFlags) {
-          cmdArgs = cmdArgs.concat(buildFlags);
-        }
+        cmdArgs = cmdArgs.concat(taskOpts['test_build_flags'] || []);
+        cmdArgs = cmdArgs.concat(cmdBuildFlags);
         cmdArgs = cmdArgs.concat(cmdPckgs);
         cmdArgs = cmdArgs.concat(cmdFlags);
-      } else {
-        if (action === 'build') {
-          if (!cmdFlags || cmdFlags.join(' ').indexOf('-o ') === -1) {
-            cmdArgs.push('-o', output);
-          }
-          cmdFlags = replaceTags(cmdFlags, inlineTags);
+      } else if (action === "build") {
+        if (!cmdFlags || _.indexOf(cmdFlags, '-o') === -1) {
+          cmdArgs.push('-o', output);
         }
+        cmdArgs = cmdArgs.concat(cmdFlags);
+        cmdArgs = cmdArgs.concat(cmdPckgs);
+      } else if (action === "run") {
+        cmdArgs = cmdArgs.concat(cmdBuildFlags);
+        cmdArgs = cmdArgs.concat(cmdPckgs);
+        cmdArgs = cmdArgs.concat(cmdFlags);
+      } else if (action === "get") {
+        cmdArgs = cmdArgs.concat(cmdFlags);
+        cmdArgs = cmdArgs.concat(cmdBuildFlags);
+        cmdArgs = cmdArgs.concat(cmdPckgs);
+      } else if (action === "install") {
+        cmdArgs = cmdArgs.concat(cmdBuildFlags);
+        cmdArgs = cmdArgs.concat(cmdPckgs);
+      } else {
         cmdArgs = cmdArgs.concat(cmdFlags);
         cmdArgs = cmdArgs.concat(cmdPckgs);
       }
