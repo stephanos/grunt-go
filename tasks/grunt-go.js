@@ -22,7 +22,7 @@ module.exports = function (grunt) {
     return spawnFunc;
   }
 
-  // expecting 'go:<app>:<command>'
+  // expecting 'go:<command>:<target>(:<profile>)'
   function validateArgs(args) {
     if (args.length === 0) {
       grunt.log.error('Unable to run task: no target specified');
@@ -83,7 +83,12 @@ module.exports = function (grunt) {
       }
       var action = taskArgs[0];
       var target = taskArgs[1];
-      var profile = taskArgs[2];
+      var profile = taskArgs[2] || "";
+
+      if (!target || !grunt.config([name, target])) {
+        grunt.log.error('Unable to run task: target \'' + target + '\' not found');
+        return false;
+      }
 
       var gruntTaskTargetProfileOpts = grunt.config([name, target, profile]) || {};
       var gruntTaskTargetOpts = grunt.config([name, target]) || {};
@@ -165,7 +170,7 @@ module.exports = function (grunt) {
       cmdOpts['env'].GOPATH =
         createPath(gruntTaskOpts)
           .concat(createPath(gruntTaskTargetOpts))
-          .concat(createPath(gruntTaskTargetProfileOpts));
+          .concat(createPath(gruntTaskTargetProfileOpts)).join(':');
 
       grunt.log.debug('CMD opts: ' + JSON.stringify(cmdOpts));
 
