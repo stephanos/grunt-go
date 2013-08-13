@@ -53,6 +53,20 @@ module.exports = function (grunt) {
     return true;
   }
 
+  function replaceTags(array, newTags) {
+    if (array && newTags && newTags.length > 0) {
+      var tagIdx = _.indexOf(array, "-tags");
+      if (tagIdx !== -1) {
+        if (array.length > tagIdx + 1) {
+          array[tagIdx + 1] = newTags.join(' ');
+        }
+      } else {
+        array = array.concat(["-tags"].concat(newTags));
+      }
+    }
+    return array;
+  }
+
   // ==== INTERFACE
 
   var exports = {
@@ -102,37 +116,38 @@ module.exports = function (grunt) {
 
       // ==== assemble command arguments
 
-      var cmdArgs = [action];
-      var cmdFlags = taskOpts[action + '_flags'];
-      var cmdPckgs = taskOpts[action + '_pckgs'];
+      var inlineTags = [];
+      if (action.indexOf('-') !== -1) {
+        var parts = action.split('-');
+        inlineTags = parts.splice(1, parts.length);
+        action = parts[0];
+      }
 
-      if (action === 'test') {
+      var cmdArgs = [action];
+      var cmdFlags = taskOpts[action + '_flags'] || [];
+      var cmdPckgs = taskOpts[action + '_pckgs'] || [];
+
+      if (action === "test") {
+        var buildFlags = replaceTags(taskOpts['build_flags'], inlineTags);
+
         var testBuildFlags = taskOpts['test_build_flags'];
         if (testBuildFlags) {
           cmdArgs = cmdArgs.concat(testBuildFlags);
         }
-        var buildFlags = taskOpts['build_flags'];
         if (buildFlags) {
           cmdArgs = cmdArgs.concat(buildFlags);
         }
-        if (cmdPckgs) {
-          cmdArgs = cmdArgs.concat(cmdPckgs);
-        }
-        if (cmdFlags) {
-          cmdArgs = cmdArgs.concat(cmdFlags);
-        }
+        cmdArgs = cmdArgs.concat(cmdPckgs);
+        cmdArgs = cmdArgs.concat(cmdFlags);
       } else {
         if (action === 'build') {
           if (!cmdFlags || cmdFlags.join(' ').indexOf('-o ') === -1) {
             cmdArgs.push('-o', output);
           }
+          cmdFlags = replaceTags(cmdFlags, inlineTags);
         }
-        if (cmdFlags) {
-          cmdArgs = cmdArgs.concat(cmdFlags);
-        }
-        if (cmdPckgs) {
-          cmdArgs = cmdArgs.concat(cmdPckgs);
-        }
+        cmdArgs = cmdArgs.concat(cmdFlags);
+        cmdArgs = cmdArgs.concat(cmdPckgs);
       }
 
 

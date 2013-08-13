@@ -63,6 +63,18 @@ exports.copy = {
     test.equal(result.opts['env']['GOARCH'], 'amd64');
 
     test.done();
+  },
+
+  testTestWithInlineTags: function (test) {
+    var task = ctx.newTask(['myapp', 'test-!myflag'], {
+      build_flags: ['-tags', 'myflag']
+    });
+
+    var result = task.execute(true);
+    test.notEqual(result, false);
+    test.equals(result.cmd, 'go test -tags !myflag .');
+
+    test.done();
   }
 
 };

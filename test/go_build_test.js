@@ -58,6 +58,18 @@ exports.copy = {
     test.equals(result.cmd, 'go build -o myapp -tags myflag .');
 
     test.done();
+  },
+
+  testBuildWithInlineTags: function (test) {
+    var task = ctx.newTask(['myapp', 'build-!myflag'], {
+      build_flags: ['-tags', 'myflag']
+    });
+
+    var result = task.execute(true);
+    test.notEqual(result, false);
+    test.equals(result.cmd, 'go build -o myapp -tags !myflag .');
+
+    test.done();
   }
 
 };
