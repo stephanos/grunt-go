@@ -7,8 +7,8 @@ module.exports = function (grunt) {
   var _ = grunt.util._;
 
   var defaultOpts = {
-    build_pckgs: '.',
-    test_pckgs: '.'
+    build_pckgs: ['.'],
+    test_pckgs: ['.']
   };
 
   function spawned(done, cmd, args, opts) {
@@ -34,6 +34,20 @@ module.exports = function (grunt) {
     } else if (args.length > 2) {
       grunt.log.error('Unable to run task: too many arguments (up to 3 allowed)');
       return false;
+    }
+
+    return true;
+  }
+
+  function validateOpts(opts) {
+    for (var key in opts) {
+      if (key.indexOf('_flags') !== -1 || key.indexOf('_pckgs') !== -1 || key === 'GOPATH') {
+        var value = opts[key];
+        if (!(value instanceof Array)) {
+          grunt.log.error('Unable to run task: option \'' + key + '\' must be an array');
+          return false;
+        }
+      }
     }
 
     return true;
@@ -65,6 +79,9 @@ module.exports = function (grunt) {
         defaultOpts
       );
       grunt.log.debug('Task opts: ' + JSON.stringify(taskOpts));
+      if (validateOpts(taskOpts) === false) {
+        return false;
+      }
       var output = taskOpts['output'] || target;
 
 
@@ -92,29 +109,29 @@ module.exports = function (grunt) {
       if (action === 'test') {
         var testBuildFlags = taskOpts['test_build_flags'];
         if (testBuildFlags) {
-          cmdArgs.push(testBuildFlags);
+          cmdArgs = cmdArgs.concat(testBuildFlags);
         }
         var buildFlags = taskOpts['build_flags'];
         if (buildFlags) {
-          cmdArgs.push(buildFlags);
+          cmdArgs = cmdArgs.concat(buildFlags);
         }
         if (cmdPckgs) {
-          cmdArgs.push(cmdPckgs);
+          cmdArgs = cmdArgs.concat(cmdPckgs);
         }
         if (cmdFlags) {
-          cmdArgs.push(cmdFlags);
+          cmdArgs = cmdArgs.concat(cmdFlags);
         }
       } else {
         if (action === 'build') {
-          if (!cmdFlags || cmdFlags.indexOf('-o ') === -1) {
-            cmdArgs.push('-o ' + output);
+          if (!cmdFlags || cmdFlags.join(' ').indexOf('-o ') === -1) {
+            cmdArgs.push('-o', output);
           }
         }
         if (cmdFlags) {
-          cmdArgs.push(cmdFlags);
+          cmdArgs = cmdArgs.concat(cmdFlags);
         }
         if (cmdPckgs) {
-          cmdArgs.push(cmdPckgs);
+          cmdArgs = cmdArgs.concat(cmdPckgs);
         }
       }
 
@@ -130,17 +147,13 @@ module.exports = function (grunt) {
         cmdOpts['env'][envName] = envTaskOpts[envName];
       }
 
-      var task_GOPATH = gruntTaskOpts['GOPATH'];
-      var target_GOPATH = gruntTaskTargetOpts['GOPATH'];
+      var task_GOPATH = gruntTaskOpts['GOPATH'] || [];
+      var target_GOPATH = gruntTaskTargetOpts['GOPATH'] || [];
 
       if (task_GOPATH || target_GOPATH) {
-        var GOPATH = [];
-        var GOPATHs = (task_GOPATH || '').split(':').concat((target_GOPATH || '').split(':'));
-        for (var i in GOPATHs) {
-          var p = GOPATHs[i];
-          if (p !== '') {
-            GOPATH.push(path.resolve(p));
-          }
+        var GOPATH = task_GOPATH.concat(target_GOPATH);
+        for (var i in GOPATH) {
+          GOPATH[i] = path.resolve(path.join(cmdOpts['cwd'], GOPATH[i]));
         }
         cmdOpts['env'].GOPATH = GOPATH.join(':');
       }

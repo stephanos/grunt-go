@@ -6,6 +6,7 @@ exports.copy = {
     var task = ctx.newTask(['myapp', 'run']);
 
     var result = task.execute(true);
+    test.notEqual(result, false);
     test.equals(result.cmd, 'go run');
 
     test.done();
@@ -17,6 +18,7 @@ exports.copy = {
     });
 
     var result = task.execute(true);
+    test.notEqual(result, false);
     test.notEqual(result.opts['cwd'].indexOf('/myroot'), -1);
 
     test.done();
@@ -28,6 +30,7 @@ exports.copy = {
     });
 
     var result = task.execute(true);
+    test.notEqual(result, false);
     test.notEqual(result.cmd.indexOf('/sdk/go clean'), -1);
 
     test.done();
@@ -36,11 +39,12 @@ exports.copy = {
   testRunWithCustomGoPath: function (test) {
     var task = ctx.newTask(['myapp', 'run'], {
       myapp: {
-        GOPATH: "mypath"
+        GOPATH: ["mypath"]
       }
     });
 
     var result = task.execute(true);
+    test.notEqual(result, false);
     test.equal(result.opts['env']['GOPATH'].indexOf(':'), -1);
     test.notEqual(result.opts['env']['GOPATH'].indexOf('/mypath'), -1);
 
@@ -55,6 +59,7 @@ exports.copy = {
     });
 
     var result = task.execute(true);
+    test.notEqual(result, false);
     test.equal(result.opts['env']['GOARCH'], 'amd64');
 
     test.done();

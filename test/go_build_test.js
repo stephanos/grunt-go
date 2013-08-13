@@ -6,6 +6,7 @@ exports.copy = {
     var task = ctx.newTask(['myapp', 'build']);
 
     var result = task.execute(true);
+    test.notEqual(result, false);
     test.equals(result.cmd, 'go build -o myapp .');
 
     test.done();
@@ -17,6 +18,7 @@ exports.copy = {
     });
 
     var result = task.execute(true);
+    test.notEqual(result, false);
     test.equals(result.cmd, 'go build -o server .');
 
     test.done();
@@ -24,10 +26,11 @@ exports.copy = {
 
   testBuildWithCustomOutput2: function (test) {
     var task = ctx.newTask(['myapp', 'build'], {
-      build_flags: '-o server'
+      build_flags: ['-o', 'server']
     });
 
     var result = task.execute(true);
+    test.notEqual(result, false);
     test.equals(result.cmd, 'go build -o server .');
 
     test.done();
@@ -35,10 +38,11 @@ exports.copy = {
 
   testBuildWithCustomPackages: function (test) {
     var task = ctx.newTask(['myapp', 'build'], {
-      build_pckgs: 'mypckg'
+      build_pckgs: ['mypckg']
     });
 
     var result = task.execute(true);
+    test.notEqual(result, false);
     test.equals(result.cmd, 'go build -o myapp mypckg');
 
     test.done();
@@ -46,10 +50,11 @@ exports.copy = {
 
   testBuildWithTags: function (test) {
     var task = ctx.newTask(['myapp', 'build'], {
-      build_flags: '-tags myflag'
+      build_flags: ['-tags', 'myflag']
     });
 
     var result = task.execute(true);
+    test.notEqual(result, false);
     test.equals(result.cmd, 'go build -o myapp -tags myflag .');
 
     test.done();

@@ -27,6 +27,17 @@ exports.copy = {
     test.equals(result, false);
 
     test.done();
+  },
+
+  testInvalidOpts: function (test) {
+    var task = ctx.newTask(['myapp', 'run'], {
+      build_flags: "string"
+    });
+
+    var result = task.execute(true);
+    test.equals(result, false);
+
+    test.done();
   }
 
 };
