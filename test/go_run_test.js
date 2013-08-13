@@ -3,7 +3,7 @@ var ctx = require('./context.js');
 exports.copy = {
 
   testRun: function (test) {
-    var task = ctx.newTask(['myapp', 'run']);
+    var task = ctx.newTask(['run', 'myapp']);
 
     var result = task.execute(true);
     test.notEqual(result, false);
@@ -13,7 +13,7 @@ exports.copy = {
   },
 
   testRunWithCustomBin: function (test) {
-    var task = ctx.newTask(['myapp', 'run'], {
+    var task = ctx.newTask(['run', 'myapp'], {
       bin: "sdk"
     });
 
@@ -25,7 +25,7 @@ exports.copy = {
   },
 
   testRunWithFile: function (test) {
-    var task = ctx.newTask(['myapp', 'run'], {
+    var task = ctx.newTask(['run', 'myapp'], {
       run_files: ["main.go"]
     });
 
@@ -37,7 +37,7 @@ exports.copy = {
   },
 
   testRunWithFlagAndFile: function (test) {
-    var task = ctx.newTask(['myapp', 'run'], {
+    var task = ctx.newTask(['run', 'myapp'], {
       build_flags: ["-race"],
       run_files: ["main.go"]
     });
@@ -50,7 +50,7 @@ exports.copy = {
   },
 
   testRunWithFlagAndFileAndArgs: function (test) {
-    var task = ctx.newTask(['myapp', 'run'], {
+    var task = ctx.newTask(['run', 'myapp'], {
       run_flags: ["-config", "dev.conf"],
       build_flags: ["-race"],
       run_files: ["main.go"]
@@ -64,7 +64,7 @@ exports.copy = {
   },
 
   testRunWithCustomRoot: function (test) {
-    var task = ctx.newTask(['myapp', 'run'], {
+    var task = ctx.newTask(['run', 'myapp'], {
       root: "myroot"
     });
 
@@ -76,7 +76,7 @@ exports.copy = {
   },
 
   testRunWithCustomGoPath: function (test) {
-    var task = ctx.newTask(['myapp', 'run'], {
+    var task = ctx.newTask(['run', 'myapp'], {
       myapp: {
         GOPATH: ["mypath"]
       }
@@ -91,7 +91,7 @@ exports.copy = {
   },
 
   testRunWithCustomGoArch: function (test) {
-    var task = ctx.newTask(['myapp', 'run'], {
+    var task = ctx.newTask(['run', 'myapp'], {
       env: {
         GOARCH: "amd64"
       }

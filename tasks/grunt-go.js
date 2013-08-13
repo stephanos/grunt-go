@@ -52,18 +52,18 @@ module.exports = function (grunt) {
     return true;
   }
 
-  function replaceTags(array, newTags) {
-    if (array && newTags && newTags.length > 0) {
-      var tagIdx = _.indexOf(array, "-tags");
-      if (tagIdx !== -1) {
-        if (array.length > tagIdx + 1) {
-          array[tagIdx + 1] = newTags.join(' ');
-        }
-      } else {
-        array = array.concat(["-tags"].concat(newTags));
+  function createPath(opts) {
+    var res = [];
+    var root = opts['root'] || '.';
+    var paths = opts['GOPATH'] || [];
+
+    if (paths) {
+      for (var i in paths) {
+        res.push(path.resolve(path.join(root, paths[i])));
       }
     }
-    return array;
+
+    return res;
   }
 
   // ==== INTERFACE
@@ -81,12 +81,15 @@ module.exports = function (grunt) {
       if (validateArgs(taskArgs) === false) {
         return false;
       }
-      var target = taskArgs[0];
-      var action = taskArgs[1];
+      var action = taskArgs[0];
+      var target = taskArgs[1];
+      var profile = taskArgs[2];
 
-      var gruntTaskTargetOpts = grunt.config([name, target, 'options']) || {};
+      var gruntTaskTargetProfileOpts = grunt.config([name, target, profile]) || {};
+      var gruntTaskTargetOpts = grunt.config([name, target]) || {};
       var gruntTaskOpts = grunt.config([name, 'options']) || {};
       var taskOpts = _.defaults(
+        gruntTaskTargetProfileOpts,
         gruntTaskTargetOpts,
         gruntTaskOpts,
         defaultOpts
@@ -115,16 +118,9 @@ module.exports = function (grunt) {
 
       // ==== assemble command arguments
 
-      var inlineTags = [];
-      if (action.indexOf('-') !== -1) {
-        var parts = action.split('-');
-        inlineTags = parts.splice(1, parts.length);
-        action = parts[0];
-      }
-
       var cmdArgs = [action];
       var cmdFlags = taskOpts[action + '_flags'] || [];
-      var cmdBuildFlags = replaceTags(taskOpts['build_flags'], inlineTags) || [];
+      var cmdBuildFlags = taskOpts['build_flags'] || [];
       var cmdPckgs = taskOpts[action + '_pckgs'] || taskOpts[action + '_files'] || taskOpts['pckgs'] || [];
 
       if (action === "test") {
@@ -166,16 +162,10 @@ module.exports = function (grunt) {
         cmdOpts['env'][envName] = envTaskOpts[envName];
       }
 
-      var task_GOPATH = gruntTaskOpts['GOPATH'] || [];
-      var target_GOPATH = gruntTaskTargetOpts['GOPATH'] || [];
-
-      if (task_GOPATH || target_GOPATH) {
-        var GOPATH = task_GOPATH.concat(target_GOPATH);
-        for (var i in GOPATH) {
-          GOPATH[i] = path.resolve(path.join(cmdOpts['cwd'], GOPATH[i]));
-        }
-        cmdOpts['env'].GOPATH = GOPATH.join(':');
-      }
+      cmdOpts['env'].GOPATH =
+        createPath(gruntTaskOpts)
+          .concat(createPath(gruntTaskTargetOpts))
+          .concat(createPath(gruntTaskTargetProfileOpts));
 
       grunt.log.debug('CMD opts: ' + JSON.stringify(cmdOpts));
 

@@ -1,28 +1,28 @@
 var grunt = require('grunt');
 var gruntGo = require('../tasks/grunt-go.js');
 
-module.exports =  {
+module.exports = {
 
   newTask: function (taskArgs, gruntOptions) {
 
+    var _ = grunt.util._;
     var task = gruntGo(grunt);
 
     task.args = taskArgs || [];
 
     grunt.config = function (array) {
-      var target;
-      if (array.length === 3) target = array[1];
+      var target, profile;
+      if (array.length > 2) {
+        target = array[1];
+        profile = array[2];
+      }
 
-      if (target) {
+      if (profile) {
+        return (gruntOptions || {})[profile];
+      } else if (target) {
         return (gruntOptions || {})[target];
       } else {
-        var res = {};
-        for (var key in gruntOptions) {
-          if (key != taskArgs[0]) {
-            res[key] = gruntOptions[key];
-          }
-        }
-        return res;
+        return _.omit(_.omit(gruntOptions, taskArgs[1]), taskArgs[2]);
       }
     };
 

@@ -3,7 +3,7 @@ var ctx = require('./context.js');
 exports.copy = {
 
   testBuild: function (test) {
-    var task = ctx.newTask(['myapp', 'build']);
+    var task = ctx.newTask(['build', 'myapp']);
 
     var result = task.execute(true);
     test.notEqual(result, false);
@@ -13,7 +13,7 @@ exports.copy = {
   },
 
   testBuildWithCustomOutput: function (test) {
-    var task = ctx.newTask(['myapp', 'build'], {
+    var task = ctx.newTask(['build', 'myapp'], {
       output: 'server'
     });
 
@@ -25,7 +25,7 @@ exports.copy = {
   },
 
   testBuildWithCustomOutput2: function (test) {
-    var task = ctx.newTask(['myapp', 'build'], {
+    var task = ctx.newTask(['build', 'myapp'], {
       build_flags: ['-o', 'server']
     });
 
@@ -37,7 +37,7 @@ exports.copy = {
   },
 
   testBuildWithCustomPackages: function (test) {
-    var task = ctx.newTask(['myapp', 'build'], {
+    var task = ctx.newTask(['build', 'myapp'], {
       build_pckgs: ['mypckg']
     });
 
@@ -49,7 +49,7 @@ exports.copy = {
   },
 
   testBuildWithTags: function (test) {
-    var task = ctx.newTask(['myapp', 'build'], {
+    var task = ctx.newTask(['build', 'myapp'], {
       build_flags: ['-tags', 'myflag']
     });
 
@@ -59,17 +59,5 @@ exports.copy = {
 
     test.done();
   },
-
-  testBuildWithInlineTags: function (test) {
-    var task = ctx.newTask(['myapp', 'build-!myflag'], {
-      build_flags: ['-tags', 'myflag']
-    });
-
-    var result = task.execute(true);
-    test.notEqual(result, false);
-    test.equals(result.cmd, 'go build -o myapp -tags !myflag .');
-
-    test.done();
-  }
 
 };

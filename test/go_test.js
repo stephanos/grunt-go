@@ -3,7 +3,7 @@ var ctx = require('./context.js');
 exports.copy = {
 
   testClean: function (test) {
-    var task = ctx.newTask(['myapp', 'clean'], {
+    var task = ctx.newTask(['clean', 'myapp'], {
       clean_flags: ['-i', '-r']
     });
 
@@ -14,7 +14,7 @@ exports.copy = {
   },
 
   testFix: function (test) {
-    var task = ctx.newTask(['myapp', 'fix'], {
+    var task = ctx.newTask(['fix', 'myapp'], {
       pckgs: ['mypckg']
     });
 
@@ -25,7 +25,7 @@ exports.copy = {
   },
 
   testFmt: function (test) {
-    var task = ctx.newTask(['myapp', 'fmt'], {
+    var task = ctx.newTask(['fmt', 'myapp'], {
       fmt_pckgs: ['mypckg'],
       fmt_flags: ['-n']
     });
@@ -37,7 +37,7 @@ exports.copy = {
   },
 
   testDoc: function (test) {
-    var task = ctx.newTask(['myapp', 'doc'], {
+    var task = ctx.newTask(['doc', 'myapp'], {
       doc_flags: ['-n']
     });
 
@@ -48,7 +48,7 @@ exports.copy = {
   },
 
   testList: function (test) {
-    var task = ctx.newTask(['myapp', 'list'], {
+    var task = ctx.newTask(['list', 'myapp'], {
       list_flags: ['-json'],
       list_pckgs: ['mypckg']
     });
@@ -60,7 +60,7 @@ exports.copy = {
   },
 
   testGet: function (test) {
-    var task = ctx.newTask(['myapp', 'get'], {
+    var task = ctx.newTask(['get', 'myapp'], {
       get_flags: ['-u'],
       get_pckgs: ['mypckg'],
       build_flags: ['-race']
@@ -73,7 +73,7 @@ exports.copy = {
   },
 
   testVet: function (test) {
-    var task = ctx.newTask(['myapp', 'vet'], {
+    var task = ctx.newTask(['vet', 'myapp'], {
       vet_flags: ['-n']
     });
 
@@ -84,7 +84,7 @@ exports.copy = {
   },
 
   testInstall: function (test) {
-    var task = ctx.newTask(['myapp', 'install'], {
+    var task = ctx.newTask(['install', 'myapp'], {
       build_flags: ['-race'],
       install_flags: ['-nonsense']
     });

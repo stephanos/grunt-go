@@ -2,7 +2,7 @@ var ctx = require('./context.js');
 
 exports.copy = {
 
-  testMissingTarget: function (test) {
+  testMissingCommand: function (test) {
     var task = ctx.newTask([]);
 
     var result = task.execute(true);
@@ -11,8 +11,8 @@ exports.copy = {
     test.done();
   },
 
-  testMissingCommand: function (test) {
-    var task = ctx.newTask(['myapp']);
+  testMissingTarget: function (test) {
+    var task = ctx.newTask(['run']);
 
     var result = task.execute(true);
     test.equals(result, false);
@@ -21,7 +21,7 @@ exports.copy = {
   },
   
   testTooManyArgs: function (test) {
-    var task = ctx.newTask(['myapp', 'run', 'nonsense']);
+    var task = ctx.newTask(['run', 'myapp', 'nonsense']);
 
     var result = task.execute(true);
     test.equals(result, false);
@@ -30,7 +30,7 @@ exports.copy = {
   },
 
   testInvalidOpts: function (test) {
-    var task = ctx.newTask(['myapp', 'run'], {
+    var task = ctx.newTask(['run', 'myapp'], {
       build_flags: "string"
     });
 
