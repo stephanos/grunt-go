@@ -8,6 +8,8 @@ module.exports = function (grunt) {
 
   var defaultOpts = {
     pckgs: ['.'],
+    test_pckgs: ["./..."],
+
     fmt_flags: ['-w']
   };
 
