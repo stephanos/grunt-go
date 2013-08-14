@@ -30,8 +30,8 @@ module.exports = function (grunt) {
     } else if (args.length === 1) {
       grunt.log.error('Unable to run task: no action specified (e.g. build)');
       return false;
-    } else if (args.length > 2) {
-      grunt.log.error('Unable to run task: too many arguments (up to 3 allowed)');
+    } else if (args.length > 3) {
+      grunt.log.error('Unable to run task: too many arguments (up to 4 allowed)');
       return false;
     }
 
@@ -92,10 +92,12 @@ module.exports = function (grunt) {
 
       var gruntTaskTargetProfileOpts = grunt.config([name, target, profile]) || {};
       var gruntTaskTargetOpts = grunt.config([name, target]) || {};
+      var gruntTaskProfileOpts = grunt.config([name, 'options', profile]) || {};
       var gruntTaskOpts = grunt.config([name, 'options']) || {};
       var taskOpts = _.defaults(
         gruntTaskTargetProfileOpts,
         gruntTaskTargetOpts,
+        gruntTaskProfileOpts,
         gruntTaskOpts,
         defaultOpts
       );
