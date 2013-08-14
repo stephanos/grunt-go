@@ -10,6 +10,7 @@ module.exports = function (grunt) {
     pckgs: ['.'],
     test_pckgs: ["./..."],
 
+    get_flags: ["-u"],
     fmt_flags: ['-l -w']
   };
 
