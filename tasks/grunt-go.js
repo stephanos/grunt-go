@@ -7,7 +7,8 @@ module.exports = function (grunt) {
   var _ = grunt.util._;
 
   var defaultOpts = {
-    pckgs: ['.']
+    pckgs: ['.'],
+    fmt_flags: ['-w']
   };
 
   function spawned(done, cmd, args, opts) {
@@ -91,13 +92,13 @@ module.exports = function (grunt) {
       }
 
       var gruntTaskTargetProfileOpts = grunt.config([name, target, profile]) || {};
-      var gruntTaskTargetOpts = grunt.config([name, target]) || {};
       var gruntTaskProfileOpts = grunt.config([name, 'options', profile]) || {};
+      var gruntTaskTargetOpts = grunt.config([name, target]) || {};
       var gruntTaskOpts = grunt.config([name, 'options']) || {};
       var taskOpts = _.defaults(
         gruntTaskTargetProfileOpts,
-        gruntTaskTargetOpts,
         gruntTaskProfileOpts,
+        gruntTaskTargetOpts,
         gruntTaskOpts,
         defaultOpts
       );
@@ -105,12 +106,19 @@ module.exports = function (grunt) {
       if (validateOpts(taskOpts) === false) {
         return false;
       }
+
       var output = taskOpts['output'] || target;
+      var cmdArgs = [action];
 
 
       // ==== assemble command path
 
       var cmd = 'go';
+      if (action === 'fmt') {
+        cmd = 'gofmt';
+        cmdArgs = [];
+      }
+
       var goBin = taskOpts['bin'];
       if (goBin) {
         cmd = goBin + '/' + cmd;
@@ -125,7 +133,6 @@ module.exports = function (grunt) {
 
       // ==== assemble command arguments
 
-      var cmdArgs = [action];
       var cmdFlags = taskOpts[action + '_flags'] || [];
       var cmdBuildFlags = taskOpts['build_flags'] || [];
       var cmdPckgs = taskOpts[action + '_pckgs'] || taskOpts[action + '_files'] || taskOpts['pckgs'] || [];

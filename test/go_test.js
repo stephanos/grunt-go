@@ -26,12 +26,11 @@ exports.copy = {
 
   testFmt: function (test) {
     var task = ctx.newTask(['fmt', 'myapp'], {
-      fmt_pckgs: ['mypckg'],
-      fmt_flags: ['-n']
+      fmt_pckgs: ['mypckg']
     });
 
     var result = task.execute(true);
-    test.equals(result.cmd, 'go fmt -n mypckg');
+    test.equals(result.cmd, 'gofmt -w mypckg');
 
     test.done();
   },
