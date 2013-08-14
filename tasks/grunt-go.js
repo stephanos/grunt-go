@@ -8,10 +8,11 @@ module.exports = function (grunt) {
 
   var defaultOpts = {
     pckgs: ['.'],
-    test_pckgs: ["./..."],
+    run_files: ['main.go'],
+    test_pckgs: ['./...'],
 
-    get_flags: ["-u"],
-    fmt_flags: ['-l -w']
+    get_flags: ['-u'],
+    fmt_flags: ['-l', '-w']
   };
 
   function spawned(done, cmd, args, opts) {
@@ -87,7 +88,7 @@ module.exports = function (grunt) {
       }
       var action = taskArgs[0];
       var target = taskArgs[1];
-      var profile = taskArgs[2] || "";
+      var profile = taskArgs[2] || '';
 
       if (!target || !grunt.config([name, target])) {
         grunt.log.error('Unable to run task: target \'' + target + '\' not found');
@@ -140,26 +141,26 @@ module.exports = function (grunt) {
       var cmdBuildFlags = taskOpts['build_flags'] || [];
       var cmdPckgs = taskOpts[action + '_pckgs'] || taskOpts[action + '_files'] || taskOpts['pckgs'] || [];
 
-      if (action === "test") {
+      if (action === 'test') {
         cmdArgs = cmdArgs.concat(taskOpts['test_build_flags'] || []);
         cmdArgs = cmdArgs.concat(cmdBuildFlags);
         cmdArgs = cmdArgs.concat(cmdPckgs);
         cmdArgs = cmdArgs.concat(cmdFlags);
-      } else if (action === "build") {
+      } else if (action === 'build') {
         if (!cmdFlags || _.indexOf(cmdFlags, '-o') === -1) {
           cmdArgs.push('-o', output);
         }
         cmdArgs = cmdArgs.concat(cmdFlags);
         cmdArgs = cmdArgs.concat(cmdPckgs);
-      } else if (action === "run") {
+      } else if (action === 'run') {
         cmdArgs = cmdArgs.concat(cmdBuildFlags);
         cmdArgs = cmdArgs.concat(cmdPckgs);
         cmdArgs = cmdArgs.concat(cmdFlags);
-      } else if (action === "get") {
+      } else if (action === 'get') {
         cmdArgs = cmdArgs.concat(cmdFlags);
         cmdArgs = cmdArgs.concat(cmdBuildFlags);
         cmdArgs = cmdArgs.concat(cmdPckgs);
-      } else if (action === "install") {
+      } else if (action === 'install') {
         cmdArgs = cmdArgs.concat(cmdBuildFlags);
         cmdArgs = cmdArgs.concat(cmdPckgs);
       } else {
@@ -172,7 +173,7 @@ module.exports = function (grunt) {
 
       var cmdOpts = {};
       cmdOpts['env'] = process.env || {};
-      cmdOpts['cwd'] = path.resolve(taskOpts['root'] || '.');
+      cmdOpts['cwd'] = path.resolve(taskOpts[action + '_root'] || taskOpts['root'] || '.');
 
       var envTaskOpts = taskOpts['env'] || {};
       for (var envName in envTaskOpts) {
