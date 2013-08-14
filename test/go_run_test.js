@@ -7,7 +7,7 @@ exports.copy = {
 
     var result = task.execute(true);
     test.notEqual(result, false);
-    test.equals(result.cmd, 'go run .');
+    test.equals(result.cmd, 'go run main.go');
 
     test.done();
   },

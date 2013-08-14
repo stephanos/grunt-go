@@ -7,7 +7,7 @@ exports.copy = {
 
     var result = task.execute(true);
     test.notEqual(result, false);
-    test.equals(result.cmd, 'go test .');
+    test.equals(result.cmd, 'go test ./...');
 
     test.done();
   },
@@ -19,7 +19,7 @@ exports.copy = {
 
     var result = task.execute(true);
     test.notEqual(result, false);
-    test.equals(result.cmd, 'go test -race .');
+    test.equals(result.cmd, 'go test -race ./...');
 
     test.done();
   },
@@ -32,7 +32,7 @@ exports.copy = {
 
     var result = task.execute(true);
     test.notEqual(result, false);
-    test.equals(result.cmd, 'go test -c -i -race .');
+    test.equals(result.cmd, 'go test -c -i -race ./...');
 
     test.done();
   },
@@ -45,7 +45,7 @@ exports.copy = {
 
     var result = task.execute(true);
     test.notEqual(result, false);
-    test.equals(result.cmd, 'go test -race . -parallel 2');
+    test.equals(result.cmd, 'go test -race ./... -parallel 2');
 
     test.done();
   }

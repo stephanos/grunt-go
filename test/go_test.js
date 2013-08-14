@@ -30,7 +30,7 @@ exports.copy = {
     });
 
     var result = task.execute(true);
-    test.equals(result.cmd, 'gofmt -w mypckg');
+    test.equals(result.cmd, 'gofmt -l -w mypckg');
 
     test.done();
   },
