@@ -187,7 +187,6 @@ module.exports = function (grunt) {
         grunt.log.write('(dry run: script not executed)');
       }
 
-      grunt.log.writeln();
       return {
         cmd: fullCmd,
         opts: cmdOpts
