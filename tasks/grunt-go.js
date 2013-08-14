@@ -10,7 +10,7 @@ module.exports = function (grunt) {
     pckgs: ['.'],
     test_pckgs: ["./..."],
 
-    fmt_flags: ['-w']
+    fmt_flags: ['-l -w']
   };
 
   function spawned(done, cmd, args, opts) {
