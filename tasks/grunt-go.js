@@ -19,7 +19,7 @@ module.exports = function (grunt) {
   function spawned(done, cmd, args, opts) {
     function spawnFunc() {
       var spawn = require('child_process').spawn;
-      opts.stdio = 'inherit';
+      opts.stdio = [process.stdin, opts.stdout || process.stdout, opts.stderr || process.stderr];
       spawn(cmd, args || [], opts).on('exit', function (status) {
         done(status === 0);
       });
@@ -173,14 +173,24 @@ module.exports = function (grunt) {
       // ==== assemble command options
 
       var cmdOpts = {};
-      cmdOpts['env'] = process.env || {};
+
+      // cwd
       cmdOpts['cwd'] = path.resolve(taskOpts[action + '_root'] || taskOpts['root'] || '.');
 
+      // env
+      cmdOpts['env'] = process.env || {};
       var envTaskOpts = taskOpts['env'] || {};
       for (var envName in envTaskOpts) {
         cmdOpts['env'][envName] = envTaskOpts[envName];
       }
 
+      // stdout
+      var stdout = taskOpts[action + '_stdout'] || taskOpts['stdout'];
+      if (stdout && _.isFunction(stdout)) {
+        cmdOpts['env'].stdout = stdout;
+      }
+
+      // GOPATH
       cmdOpts['env'].GOPATH =
         createPath(gruntTaskOpts)
           .concat(createPath(gruntTaskTargetOpts))
