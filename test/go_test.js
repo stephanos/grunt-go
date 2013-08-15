@@ -77,7 +77,7 @@ exports.copy = {
     });
 
     var result = task.execute(true);
-    test.equals(result.cmd, 'go vet -n .');
+    test.equals(result.cmd, 'go vet -n ./...');
 
     test.done();
   },
