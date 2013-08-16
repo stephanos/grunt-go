@@ -1,6 +1,7 @@
 'use strict';
 
 var path = require('path');
+var spawn = require('child_process').spawn;
 
 module.exports = function (grunt) {
 
@@ -13,14 +14,27 @@ module.exports = function (grunt) {
     run_files: ['main.go'],
 
     get_flags: ['-u'],
-    fmt_flags: ['-l', '-w']
+    fmt_flags: ['-l', '-w'],
+
+    stdout: function (data) {
+      grunt.log.writeln(data);
+    },
+    stderr: function (data) {
+      grunt.log.error(data);
+    }
   };
 
   function spawned(done, cmd, args, opts) {
     function spawnFunc() {
-      var spawn = require('child_process').spawn;
-      opts.stdio = [process.stdin, opts.stdout || process.stdout, opts.stderr || process.stderr];
-      spawn(cmd, args || [], opts).on('exit', function (status) {
+      //opts.stdio = [process.stdin, 'ignore', 'ignore'];
+      var proc = spawn(cmd, args || [], opts);
+      proc.stdout.on('data', function (data) {
+        opts.stdout(data);
+      });
+      proc.stderr.on('data', function (data) {
+        opts.stderr(data);
+      });
+      proc.on('exit', function (status) {
         done(status === 0);
       });
     }
@@ -184,10 +198,14 @@ module.exports = function (grunt) {
         cmdOpts['env'][envName] = envTaskOpts[envName];
       }
 
-      // stdout
+      // stdout / stderr
       var stdout = taskOpts[action + '_stdout'] || taskOpts['stdout'];
       if (stdout && _.isFunction(stdout)) {
-        cmdOpts['env'].stdout = stdout;
+        cmdOpts.stdout = stdout;
+      }
+      var stderr = taskOpts[action + '_stderr'] || taskOpts['stderr'];
+      if (stderr && _.isFunction(stderr)) {
+        cmdOpts.stderr = stderr;
       }
 
       // GOPATH
