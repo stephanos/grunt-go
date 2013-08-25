@@ -8,7 +8,7 @@ exports.copy = {
     });
 
     var result = task.execute(true);
-    test.equals(result.cmd, 'go clean -i -r .');
+    test.equals(result.cmd, 'go clean -i -r ./...');
 
     test.done();
   },
@@ -41,7 +41,7 @@ exports.copy = {
     });
 
     var result = task.execute(true);
-    test.equals(result.cmd, 'go doc -n .');
+    test.equals(result.cmd, 'go doc -n ./...');
 
     test.done();
   },
@@ -89,7 +89,7 @@ exports.copy = {
     });
 
     var result = task.execute(true);
-    test.equals(result.cmd, 'go install -race .');
+    test.equals(result.cmd, 'go install -race ./...');
 
     test.done();
   }

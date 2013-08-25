@@ -8,10 +8,9 @@ module.exports = function (grunt) {
   var _ = grunt.util._;
 
   var defaultOpts = {
-    pckgs: ['.'],
-    vet_pckgs: ["./..."],
-    test_pckgs: ['./...'],
+    pckgs: ['./...'],
     run_files: ['main.go'],
+    build_pckgs: ["."],
 
     get_flags: ['-u'],
     fmt_flags: ['-l', '-w'],
