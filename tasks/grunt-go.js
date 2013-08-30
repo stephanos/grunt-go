@@ -213,11 +213,21 @@ module.exports = function (grunt) {
         cmdOpts.stderr = stderr;
       }
 
-      // GOPATH
+      // GOPATH / GOOS / GOARCH
       cmdOpts['env'].GOPATH =
         createPath(gruntTaskOpts)
           .concat(createPath(gruntTaskTargetOpts))
           .concat(createPath(gruntTaskTargetProfileOpts)).join(':');
+
+      var goos = grunt.option('GOOS');
+      if (goos) {
+        cmdOpts['env'].GOOS = goos;
+      }
+
+      var goarch = grunt.option('GOARCH');
+      if (goarch) {
+        cmdOpts['env'].GOARCH = goarch;
+      }
 
       grunt.log.debug('CMD opts: ' + JSON.stringify(cmdOpts));
 
