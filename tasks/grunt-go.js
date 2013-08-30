@@ -146,6 +146,11 @@ module.exports = function (grunt) {
           cmd = process.env.HOME + cmd.substr(1);
         }
 
+        Object.keys(process.env).forEach(function (key) {
+          var val = process.env[key];
+          cmd = cmd.replace(new RegExp('\\$' + key, 'g'), val);
+        });
+
         cmd = path.resolve(cmd);
       }
 
