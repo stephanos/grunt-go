@@ -34,9 +34,11 @@ TODO
 ## Release History
 
  * 2013-08-12   v0.0.1   initial publishing
+ * 2013-08-30   v0.0.2   allow custom GOOS/GOARCH
+ * 2013-11-15   v0.0.3   allow custom go command
 
 ---
 
 Task submitted by [Stephan Behnke](http://stephanbehnke.com)
 
-*This file was generated on Mon Aug 12 2013 18:44:49.*
+*This file was generated on Fri Nov 15 2013 21:54:36.*
