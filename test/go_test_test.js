@@ -12,6 +12,18 @@ exports.copy = {
     test.done();
   },
 
+  testTestWithCustomCmd: function (test) {
+    var task = ctx.newTask(['test', 'myapp'], {
+      cmd: "goapp"
+    });
+
+    var result = task.execute(true);
+    test.notEqual(result, false);
+    test.equals(result.cmd, 'goapp test ./...');
+
+    test.done();
+  },
+
   testTestWithBuildFlags: function (test) {
     var task = ctx.newTask(['test', 'myapp'], {
       build_flags: ['-race']

@@ -137,6 +137,10 @@ module.exports = function (grunt) {
         cmd = 'gofmt';
         cmdArgs = [];
       }
+      var goCmd = taskOpts['cmd'];
+      if (goCmd) {
+        cmd = goCmd;
+      }
 
       var goBin = taskOpts['bin'];
       if (goBin) {
