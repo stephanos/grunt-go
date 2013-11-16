@@ -132,14 +132,10 @@ module.exports = function (grunt) {
 
       // ==== assemble command path
 
-      var cmd = 'go';
+      var cmd = taskOpts['cmd'] || 'go';
       if (action === 'fmt') {
         cmd = 'gofmt';
         cmdArgs = [];
-      }
-      var goCmd = taskOpts['cmd'];
-      if (goCmd) {
-        cmd = goCmd;
       }
 
       var goBin = taskOpts['bin'];
