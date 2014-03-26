@@ -86,6 +86,15 @@ module.exports = function (grunt) {
     return res;
   }
 
+  /*
+   * Get OS specific multiline variable separator
+   * Win - ;
+   * Other - :
+   */
+  function getOSMultilineVarSeparator() {
+    return (process.platform === 'win32') ? ';' : ':';
+  }
+
   // ==== INTERFACE
 
   var exports = {
@@ -217,7 +226,7 @@ module.exports = function (grunt) {
       cmdOpts['env'].GOPATH =
         createPath(gruntTaskOpts)
           .concat(createPath(gruntTaskTargetOpts))
-          .concat(createPath(gruntTaskTargetProfileOpts)).join(':');
+          .concat(createPath(gruntTaskTargetProfileOpts)).join(getOSMultilineVarSeparator());
 
       var goos = grunt.option('GOOS');
       if (goos) {
