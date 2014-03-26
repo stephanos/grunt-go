@@ -12,3 +12,8 @@ v0.0.3:
   date: 2013-11-15
   changes:
     - allow custom go command
+
+v0.0.4:
+  date: 2014-03-25
+  changes:
+    - minor fixes

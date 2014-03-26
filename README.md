@@ -131,9 +131,10 @@ grunt go:fmt:myapp
  * 2013-08-12   v0.0.1   initial publishing
  * 2013-08-30   v0.0.2   allow custom GOOS/GOARCH
  * 2013-11-15   v0.0.3   allow custom go command
+ * 2014-03-25   v0.0.4   minor fixes
 
 ---
 
 Task submitted by [Stephan Behnke](http://stephanbehnke.com)
 
-*This file was generated on Sun Dec 22 2013 14:00:26.*
+*This file was generated on Wed Mar 26 2014 16:53:53.*
