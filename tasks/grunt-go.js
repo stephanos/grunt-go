@@ -228,12 +228,12 @@ module.exports = function (grunt) {
           .concat(createPath(gruntTaskTargetOpts))
           .concat(createPath(gruntTaskTargetProfileOpts)).join(getOSMultilineVarSeparator());
 
-      var goos = grunt.option('GOOS');
+      var goos = gruntTaskOpts["GOOS"];
       if (goos) {
         cmdOpts['env'].GOOS = goos;
       }
 
-      var goarch = grunt.option('GOARCH');
+      var goarch = gruntTaskOpts["GOARCH"];
       if (goarch) {
         cmdOpts['env'].GOARCH = goarch;
       }
