@@ -2,6 +2,7 @@
 
 > Grunt plugin for working with Go
 
+**Not actively maintained anymore. Should work well anyway. Still accepting PRs.**
 
 
 ## Getting Started
