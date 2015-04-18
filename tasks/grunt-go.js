@@ -244,6 +244,7 @@ module.exports = function (grunt) {
       // ==== execute and return
 
       var fullCmd = cmd + ' ' + cmdArgs.join(' ');
+      grunt.log.writeln('WARNING: forked repo');
       grunt.log.writeln('executing: ' + fullCmd);
 
       if (dryRun !== true) {
