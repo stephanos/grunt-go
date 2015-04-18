@@ -79,7 +79,11 @@ module.exports = function (grunt) {
 
     if (paths) {
       for (var i in paths) {
-        res.push(path.resolve(path.join(root, paths[i])));
+        if (paths[i][0] != '/') {
+          res.push(path.resolve(path.join(root, paths[i])));
+        } else {
+          res.push(path.resolve(paths[i]));
+        }
       }
     }
 
