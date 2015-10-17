@@ -1,4 +1,4 @@
-# grunt-go [![Build Status](https://travis-ci.org/101loops/grunt-go.png?branch=master)](https://travis-ci.org/101loops/grunt-go)
+# grunt-go [![Build Status](https://travis-ci.org/tomasen/grunt-go.png?branch=master)](https://travis-ci.org/tomasen/grunt-go)
 
 > Grunt plugin for working with Go
 
