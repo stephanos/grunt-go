@@ -1,4 +1,4 @@
-# grunt-go [![Build Status](https://travis-ci.org/101loops/grunt-go.png?branch=master)](https://travis-ci.org/101loops/grunt-go)
+# grunt-go [![Build Status](https://travis-ci.org/tomasen/grunt-go.png?branch=master)](https://travis-ci.org/tomasen/grunt-go)
 
 > Grunt plugin for working with Go
 
@@ -90,6 +90,21 @@ go:
     run_files: ["main.go"]
 ```
 
+###### Inside watch task
+
+```javascript
+watch: {
+  go: {
+        files: ['./myapp/{,*/}*.go'],
+        tasks: ['go:run:myapp:watched'],
+        options: {
+          atBegin: true,
+          interrupt: true
+        }
+      },
+  \\ ... 
+}
+```
 
 #### Execution
 
@@ -127,15 +142,17 @@ grunt go:test:myapp:e2eTest
 grunt go:fmt:myapp
 ```
 
+
 ## Release History
 
  * 2013-08-12   v0.0.1   initial publishing
  * 2013-08-30   v0.0.2   allow custom GOOS/GOARCH
  * 2013-11-15   v0.0.3   allow custom go command
  * 2014-03-25   v0.0.4   minor fixes
+ * 2015-09-30   v0.0.5   able to restart go:run inside watch task   
 
 ---
 
 Task submitted by [Stephan Behnke](http://stephanbehnke.com)
 
-*This file was generated on Wed Mar 26 2014 16:53:53.*
+*This file was generated on Wed Sep 30 2015 16:53:53.*

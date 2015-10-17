@@ -1,7 +1,9 @@
 'use strict';
 
 var path = require('path');
+var pstree = require("ps-tree");
 var spawn = require('child_process').spawn;
+var exec = require("child_process").exec;
 
 module.exports = function (grunt) {
 
@@ -23,19 +25,89 @@ module.exports = function (grunt) {
       grunt.log.error(data);
     }
   };
+  
+  // ps is a collection object to hold references to running GoRuns
+  var pid = null;
+
+  function noop() { };
+
+  function _stop(pid, callback) {
+    if (!!!pid) {
+      grunt.log.writeln("no pid:", "exit");
+
+      callback();
+      return;
+    }
+
+    pstree(pid, function (err, children) {
+      var i = 0;
+      var len = children.length;
+
+      var kill = function (n) {
+        var child = children[n];
+        if (!!!child) {
+          callback();
+          return;
+        }
+
+        exec("kill " + child.PID, function () {
+          i++;
+          if (i === len) {
+            grunt.log.writeln("[" + pid + "]", "process stopped");
+
+            callback();
+            return;
+          }
+
+          kill(i);
+        });
+      };
+
+      kill(i);
+    });
+  }
+
+  function stop(callback) {
+    if ("function" !== typeof callback) {
+      callback = noop;
+    }
+
+    if (!!!pid) {
+      callback();
+      return;
+    }
+
+    grunt.log.writeln("[" + pid + "]", "stopping process...");
+
+    _stop(pid, function () {
+      pid = null;
+      callback();
+    });
+  }
 
   function spawned(done, cmd, args, opts) {
     function spawnFunc() {
-      //opts.stdio = [process.stdin, 'ignore', 'ignore'];
-      var proc = spawn(cmd, args || [], opts);
-      proc.stdout.on('data', function (data) {
-        opts.stdout(data);
-      });
-      proc.stderr.on('data', function (data) {
-        opts.stderr(data);
-      });
-      proc.on('exit', function (status) {
-        done(status === 0);
+      stop(function () {
+        //opts.stdio = [process.stdin, 'ignore', 'ignore'];
+        var proc = spawn(cmd, args || [], opts);
+        pid = proc.pid;
+        grunt.log.writeln("[" + pid + "]", "processs started");
+
+        proc.stdout.on('data', function (data) {
+          opts.stdout(data);
+        });
+        proc.stderr.on('data', function (data) {
+          opts.stderr(data);
+        });
+
+        if (opts['watched'] === true) {
+          done(true);
+        } else {
+          proc.on('exit', function (status) {
+            pid = null;
+            done(status === 0);
+          });
+        }
       });
     }
 
@@ -236,6 +308,10 @@ module.exports = function (grunt) {
       var goarch = gruntTaskOpts["GOARCH"];
       if (goarch) {
         cmdOpts['env'].GOARCH = goarch;
+      }
+
+      if (profile === 'watched') {
+        cmdOpts['watched'] = true;
       }
 
       grunt.log.debug('CMD opts: ' + JSON.stringify(cmdOpts));
