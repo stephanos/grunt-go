@@ -1,7 +1,7 @@
 {
   "name": "grunt-go",
   "description": "Grunt plugin for working with Go",
-  "version": "0.0.4",
+  "version": "0.1",
   "homepage": "https://github.com/101loops/grunt-go",
   "author": {
     "name": "101 Loops",
